@@ -27,6 +27,13 @@ Publishes the build to the `gh-pages` branch.
 This isnt legally licenced yet, but please do contact me if you want to use my template.
 
 
+# TODOs
+- fix background of favicon to be transparent
+- improve favicon readability
+
+
+------
+
 # Realized with React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
