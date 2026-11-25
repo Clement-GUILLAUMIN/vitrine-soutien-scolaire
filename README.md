@@ -4,10 +4,15 @@ The latest render of the code is available [here](https://clement-guillaumin.git
 
 ## For devs : How to ...
 
-### ... Run Locally
+### Ensure npm is okay
 
 ```bash
 npm install
+```
+
+### ... Run Locally
+
+```bash
 npm run dev
 ```
 
