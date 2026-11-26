@@ -1,56 +1,92 @@
-//import { useState } from 'react'
+import { useState } from 'react'
 import './App.css'
-import { annonces,  competences} from './FrontendData.jsx'
+import logo from './assets/logo_soutien_maxim.jpeg'  
+import { annonces, competences } from './FrontendData.jsx'
 
 const email_clem = "clement.guillaumin.dev@gmail.com"
+const tel_clem = "06 77 43 63 65"
 
-export default function App() {
+function Competences() {
   return (
-    <main style={{  width: "100%",  maxWidth: 960, margin: "0 auto", padding: 24, fontFamily: "sans-serif" }}>
-      <h1>Diplômé L3 Informatique <br></br>
-        Propose Soutien Scolaire</h1>
-
-<h2>Mes compétences</h2>
-<ul style={{ textAlign: "left", maxWidth: 500, margin: "0 auto 24px" }}>
-  {competences.map((d) => (
-    <li key={d}>{d}</li>
-  ))}
-</ul>
-
-
-<h2>Services Proposés</h2>
-      <div style={{ display: "grid", gap: 16, gridTemplateColumns: `repeat(${annonces.length}, 1fr)` }}>
-        {annonces.map((a) => (
-          <article key={a.titre} style={{ border: "1px solid #ddd", borderRadius: 12, padding: 16 }}>
-  <h3>{a.titre}</h3>
-  <p>{a.matieres}</p>
-  {a.liste && (
-    <ul style={{ textAlign: "left" }}>
-      {a.liste.map((m) => (
-        <li key={m}>{m}</li>
-      ))}
-    </ul>
-  )}
-  <p>
-    <strong>Tarif</strong><br />
-    Présentiel : {a.tarif.presentiel} €/h<br />
-    Distanciel : {a.tarif.distanciel} €/h
-  </p>
-</article>
-        ))}
-      </div>
-
-<h2>Mon contact</h2>
-<ul style={{ textAlign: "left", maxWidth: 500, margin: "0 auto 24px" }}>
-  <li>email : <a href={`mailto:${email_clem}`}>{email_clem}</a></li>
-  <li>téléphone : 06 77 43 63 65 </li>
-</ul>
-
-
-
-
-    </main>
-  );
+    <section>
+      <h2>Mes compétences</h2>
+      <ul>
+        {competences.map((c) => <li key={c}>{c}</li>)}
+      </ul>
+    </section>
+  )
 }
 
+function Services() {
+  return (
+    <section>
+      <h2>Services proposés</h2>
+      <div className="cards">
+        {annonces.map((a) => (
+          <article key={a.titre} className="card">
+            <h3>{a.titre}</h3>
+            <p>{a.matieres}</p>
+            {a.liste && (
+              <ul>{a.liste.map((m) => <li key={m}>{m}</li>)}</ul>
+            )}
+            <p>
+              <strong>Tarif</strong><br />
+              Présentiel : {a.tarif.presentiel} €/h<br />
+              Distanciel : {a.tarif.distanciel} €/h
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
 
+function Contact() {
+  return (
+    <section>
+      <h2>Mon contact</h2>
+      <ul>
+        <li>email : <a href={`mailto:${email_clem}`}>{email_clem}</a></li>
+        <li>téléphone : {tel_clem} </li>
+      </ul>
+    </section>
+  )
+}
+
+const sections = [
+  { id: "services", label: "Services", content: <Services /> },
+  { id: "competences", label: "Compétences", content: <Competences /> },
+  { id: "contact", label: "Contact", content: <Contact /> },
+]
+
+export default function App() {
+  const [active, setActive] = useState("services")
+  const current = sections.find((s) => s.id === active)
+
+  return (
+    <div className="layout">
+      <aside className="sidebar">
+         <header>Diplômé L3 Informatique <br></br>
+Propose Soutien Scolaire</header>
+<img src={logo} alt="Logo" className="logo" />
+       
+        <nav>
+          {sections.map((s) => (
+            <button
+              key={s.id}
+              className={s.id === active ? "active" : ""}
+              onClick={() => setActive(s.id)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      <main className="content">
+        <h1>Diplômé L3 Informatique<br />Propose Soutien Scolaire</h1>
+        {current.content}
+      </main>
+    </div>
+  )
+}
