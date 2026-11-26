@@ -1,25 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
-import logo from './assets/logo_soutien_maxim.jpeg'  
+import logo from './assets/logo_soutien_maxim.jpeg'
 import { annonces, competences } from './FrontendData.jsx'
 
 const email_clem = "clement.guillaumin.dev@gmail.com"
 const tel_clem = "06 77 43 63 65"
 
+function Accueil({ goTo }) {
+  return (
+    <>
+      <h2>Bienvenue</h2>
+      <p>Soutien scolaire du primaire au lycée, en présentiel ou en distanciel.</p>
+      <button className="cta" onClick={() => goTo("services")}>
+        Voir les services
+      </button>
+    </>
+  )
+}
+
 function Competences() {
   return (
-    <section>
+    <>
       <h2>Mes compétences</h2>
       <ul>
         {competences.map((c) => <li key={c}>{c}</li>)}
       </ul>
-    </section>
+    </>
   )
 }
 
 function Services() {
   return (
-    <section>
+    <>
       <h2>Services proposés</h2>
       <div className="cards">
         {annonces.map((a) => (
@@ -37,45 +49,67 @@ function Services() {
           </article>
         ))}
       </div>
-    </section>
+    </>
   )
 }
 
 function Contact() {
   return (
-    <section>
+    <>
       <h2>Mon contact</h2>
       <ul>
         <li>email : <a href={`mailto:${email_clem}`}>{email_clem}</a></li>
         <li>téléphone : {tel_clem} </li>
       </ul>
-    </section>
+    </>
   )
 }
 
 const sections = [
-  { id: "services", label: "Services", content: <Services /> },
-  { id: "competences", label: "Compétences", content: <Competences /> },
-  { id: "contact", label: "Contact", content: <Contact /> },
+  { id: "accueil", label: "Accueil", Component: Accueil },
+  { id: "services", label: "Services", Component: Services },
+  { id: "contact", label: "Contact", Component: Contact },
+  { id: "competences", label: "Compétences", Component: Competences },
+  
 ]
 
 export default function App() {
-  const [active, setActive] = useState("services")
-  const current = sections.find((s) => s.id === active)
+  const [active, setActive] = useState("accueil")
+  const contentRef = useRef(null)
+
+  useEffect(() => {
+    const content = contentRef.current
+    content.focus({ preventScroll: true }) // pour que les touches fonctionnent dès l'arrivée
+
+    // La section qui traverse le milieu de la zone de contenu devient "active"
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id)
+        })
+      },
+      { root: content, rootMargin: "-50% 0px -50% 0px" }
+    )
+    content.querySelectorAll("section").forEach((s) => observer.observe(s))
+    return () => observer.disconnect()
+  }, [])
+
+  const goTo = (id) => {
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" })
+    contentRef.current.focus({ preventScroll: true })
+  }
 
   return (
     <div className="layout">
       <aside className="sidebar">
-         <header>Diplômé L3 Informatique <br></br>
-Propose Soutien Scolaire</header>
-<img src={logo} alt="Logo" className="logo" />
-       
+        <header>Diplômé L3 Informatique <br />Propose Soutien Scolaire</header>
+        <img src={logo} alt="Logo" className="logo" />
         <nav>
           {sections.map((s) => (
             <button
               key={s.id}
               className={s.id === active ? "active" : ""}
-              onClick={() => setActive(s.id)}
+              onClick={() => goTo(s.id)}
             >
               {s.label}
             </button>
@@ -83,9 +117,12 @@ Propose Soutien Scolaire</header>
         </nav>
       </aside>
 
-      <main className="content">
-        <h1>Diplômé L3 Informatique<br />Propose Soutien Scolaire</h1>
-        {current.content}
+      <main className="content" ref={contentRef} tabIndex={0}>
+        {sections.map((s) => (
+          <section key={s.id} id={s.id}>
+            <s.Component goTo={goTo} />
+          </section>
+        ))}
       </main>
     </div>
   )
