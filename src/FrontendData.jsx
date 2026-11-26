@@ -1,7 +1,7 @@
 export const competences = [
-  "Diplômé d’une Licence en informatique",
-  "Bac mention Très Bien",
-  "Niveau Anglais C1 certifié par l’Université de Lille",
+  "Diplômé d'une Licence en informatique",
+  "Bac S, mention Très Bien",
+  "Niveau Anglais C1 certifié par l'Université de Lille",
 ];
 
 
@@ -29,7 +29,8 @@ export const annonces = [
     titre: "Niveau Lycée",
     matieres: "En ce qui concerne le Lycée, pour vous garantir de la qualité, je préfère me spécialiser dans les matières que je maîtrise :",
     liste: matieresFortes,
-    tarif: { distanciel: 18, presentiel: 20 },
+    tarif: { distanciel: 18, presentiel: 20 }, //Marie du serv dit que je peux monter les prix pour le lycée, à voir
   },
+  //TODO post-bac cf gensdeconfiance
 ];
 
